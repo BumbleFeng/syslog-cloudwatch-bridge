@@ -19,13 +19,21 @@ import (
 
 var port = os.Getenv("PORT")
 var logGroupName = os.Getenv("LOG_GROUP_NAME")
-var streamName = uuid.NewV4().String()
+var streamName = getEnv("LOG_STREAM_NAME", uuid.NewV4().String())
 var sequenceToken = ""
 
 var (
 	client *http.Client
 	pool   *x509.CertPool
 )
+
+func getEnv(key, fallback string) string {
+	value, exists := os.LookupEnv(key)
+	if !exists {
+		value = fallback
+	}
+	return value
+}
 
 func init() {
 	pool = x509.NewCertPool()
